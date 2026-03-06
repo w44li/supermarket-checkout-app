@@ -1,70 +1,42 @@
 package com.supermarket.checkout.repository;
 
 import com.supermarket.checkout.model.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 /**
- * Repository interface for Product database operations
+ * In-memory repository for Product operations
  * 
  * @Repository: Marks this as a Spring repository component
  * 
- * JpaRepository<Product, Long>: 
- * - Product: The entity type this repository manages
- * - Long: The type of the entity's primary key
- * 
- * Spring automatically implements this interface! You don't need to write the code.
- * It provides methods like: save(), findById(), findAll(), delete(), etc.
+ * This implementation uses a simple Map to store products in memory
+ * No database required - all data is stored in application memory
  */
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends CrudRepository<Product, Long> {
 
     /**
-     * Custom query methods - Spring generates the SQL automatically!
-     * 
-     * Method naming conventions:
-     * - findBy[FieldName]: Find entities by a field value
-     * - findBy[FieldName]And[AnotherField]: Multiple conditions with AND
-     * - findBy[FieldName]Or[AnotherField]: Multiple conditions with OR
+     * Find all products
      */
+    List<Product> findAll();
 
     /**
-     * Find all products containing a name (case-insensitive)
-     * Spring generates: SELECT * FROM products WHERE LOWER(name) LIKE LOWER('%searchTerm%')
+     * Find product by ID
      */
-    List<Product> findByNameContainingIgnoreCase(String name);
+    Optional<Product> findById(Long id);
 
     /**
-     * Find products within a price range
-     * Spring generates: SELECT * FROM products WHERE price BETWEEN ? AND ?
+     * Save a new product (returns the saved product with ID)
      */
-    List<Product> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
+    Product save(Product product);
 
     /**
-     * Find products cheaper than a given price
-     * Spring generates: SELECT * FROM products WHERE price < ?
+     * Count total products in memory
      */
-    List<Product> findByPriceLessThan(BigDecimal price);
-
-    /**
-     * Find products more expensive than a given price
-     * Spring generates: SELECT * FROM products WHERE price > ?
-     */
-    List<Product> findByPriceGreaterThan(BigDecimal price);
-
-    /**
-     * Custom JPQL query (when method names get too complex)
-     * @Query: Allows you to write custom SQL-like queries
-     */
-    @Query("SELECT p FROM Product p WHERE p.price > ?1 ORDER BY p.price ASC")
-    List<Product> findExpensiveProducts(BigDecimal minPrice);
-
-    /**
-     * Count products by name pattern
-     */
-    long countByNameContainingIgnoreCase(String name);
+    long count();
 }

@@ -16,7 +16,7 @@ import java.math.BigDecimal;
  * This class demonstrates:
  * - Component lifecycle (@PostConstruct)
  * - Dependency injection
- * - Working with repositories
+ * - Working with in-memory repository
  */
 @Component
 public class DataInitializer {
@@ -40,9 +40,9 @@ public class DataInitializer {
             createSampleProducts();
             
             System.out.println("✅ Sample data initialized successfully!");
-            System.out.println("📊 Total products in database: " + productRepository.count());
+            System.out.println("📊 Total products in memory: " + productRepository.count());
         } else {
-            System.out.println("📊 Database already contains " + productRepository.count() + " products");
+            System.out.println("📊 Memory already contains " + productRepository.count() + " products");
         }
     }
 
