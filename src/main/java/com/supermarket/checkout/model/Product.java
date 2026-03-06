@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import jakarta.validation.constraints.NotEmpty;
 
-@Table("products")
+@Table("PRODUCTS")
 public class Product {
 
     @Id
