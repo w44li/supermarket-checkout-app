@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Component // spring knows it 
+@Component // spring should knows it 
 public class DataLoader implements CommandLineRunner {
 
     private final ProductService productService;
