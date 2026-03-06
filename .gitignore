@@ -1,0 +1,83 @@
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# Maven build directory
+target/
+
+# Maven wrapper files (uncomment if you don't want to include them)
+# .mvn/wrapper/maven-wrapper.jar
+# .mvn/wrapper/maven-wrapper.properties
+# .mvn/wrapper/MavenWrapperDownloader.java
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# IDE Files
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+.eclipse/
+.metadata/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Spring Boot
+HELP.md
+
+# H2 Database files (if using file-based H2)
+*.db
+*.mv.db
+*.trace.db
+data/
+
+# Application logs
+logs/
+spring.log
+
+# Temporary files
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage reports
+/coverage/
+*.lcov
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Generated files
+generated/
+build/
