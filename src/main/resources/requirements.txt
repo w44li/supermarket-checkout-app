@@ -1,0 +1,19 @@
+Task Statement: 
+
+Implement a simplified supermarket checkout system. 
+1: The cart can contain any number and combination of available items, in any order. 
+2:Additionally the checkout system should support weekly offers, 
+3: where an offer defines a number of items that are discounted when bought together. 
+4:For example: one apple costs 0.30€, but 2 apples are offered at 0.45€. These offers should be applied automatically during checkout.
+
+Interpretation:
+- We will create a Spring Boot application to implement the supermarket checkout system.
+- We will define a Product entity to represent items in the supermarket.
+- We will create a ProductRepository to manage product data.
+- We will implement a ProductService to handle business logic related to products.
+- We will create a DataLoader to populate the database with sample products and offers.
+- We will define a CheckoutService to handle the checkout process and apply offers automatically.
+
+Scope: 
+- We aren't implenmenting inventory management so we will assume that all products are always available in the supermarket.
+- Nevertheless we will provide an endpoint where items can be added/removed (updated) from the inventory.
