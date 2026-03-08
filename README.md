@@ -8,7 +8,7 @@ Implement a simplified supermarket checkout system. The cart can contain any num
 
 ## What does it do?
 
-Imagine you're shopping at a supermarket. Some items have special offers like "Buy 3 apples for €2.50 instead of €3.00". This app does that calculation for you.
+This service calculates the total price of a cart and automatically applies active bundle offers based on the current date.
 
 For example:
 - Normal price: 1 apple = €1.00
