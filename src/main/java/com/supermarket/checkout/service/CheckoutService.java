@@ -28,14 +28,14 @@ public BigDecimal calculateTotal(Cart cart) {
     BigDecimal total = BigDecimal.ZERO;
 
     for (CartItem item : cart.getItems()) {
-        total = total.add(calculateItemSubtotal(item));
+        total = total.add(calculateItemPriceWithOffers(item));
     }
 
     return total;
 }
 
 
-//Helper method: 1 Groupng items 
+//Helper method: 1 merging common items by adding their quantities
 private Cart mergeCartItemsByProductId(Cart cart) {
 
     Map<Long, CartItem> groupedItems = new HashMap<>();
@@ -57,8 +57,8 @@ private Cart mergeCartItemsByProductId(Cart cart) {
     return cart;
 }
 
-//Helper mthod: 2 Calculating subtotal for each item considering offers
-private BigDecimal calculateItemSubtotal(CartItem item) {
+//Helper method: 2 Calculating price of single item with offers applied
+private BigDecimal calculateItemPriceWithOffers(CartItem item) {
     
     Product product = productService.getProductById(item.getProductId());
     

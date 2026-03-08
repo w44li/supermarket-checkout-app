@@ -16,9 +16,11 @@ public class Offer {
     @NotNull
     private Long productId;
 
+    @NotNull
     @Positive
     private Integer requiredQuantity;
 
+    @NotNull
     @Positive
     private BigDecimal bundlePrice;
     

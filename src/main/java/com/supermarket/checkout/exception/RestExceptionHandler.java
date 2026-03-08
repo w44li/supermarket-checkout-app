@@ -3,6 +3,9 @@ package com.supermarket.checkout.exception;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -93,6 +96,41 @@ public class RestExceptionHandler {
         );
     }
 
+    @ExceptionHandler({DataIntegrityViolationException.class, DataAccessException.class, DbActionExecutionException.class})
+    public ProblemDetail handleDataIntegrityViolation(Exception ex) {
+        String causeMessage = extractRootCauseMessage(ex).toLowerCase();
+
+        if (causeMessage.contains("uniq_offer_period") || causeMessage.contains("unique")) {
+            return buildProblem(
+                    HttpStatus.CONFLICT,
+                    "Duplicate offer",
+                    "An offer already exists for this product and date range."
+            );
+        }
+
+        if (causeMessage.contains("fk_offers_product") || causeMessage.contains("foreign key")) {
+            return buildProblem(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid product reference",
+                    "The provided productId does not exist."
+            );
+        }
+
+        if (causeMessage.contains("chk_offer_dates") || causeMessage.contains("check constraint")) {
+            return buildProblem(
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid offer dates",
+                    "endDate must be on or after startDate."
+            );
+        }
+
+        return buildProblem(
+                HttpStatus.BAD_REQUEST,
+                "Data integrity violation",
+                "The request violates a database constraint."
+        );
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenericException(Exception ex) {
 
@@ -110,5 +148,13 @@ public class RestExceptionHandler {
         problem.setTitle(title);
         problem.setDetail(detail);
         return problem;
+    }
+
+    private String extractRootCauseMessage(Throwable throwable) {
+        Throwable root = throwable;
+        while (root.getCause() != null) {
+            root = root.getCause();
+        }
+        return root.getMessage() == null ? "" : root.getMessage();
     }
 }

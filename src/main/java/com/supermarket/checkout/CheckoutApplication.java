@@ -5,14 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 
-/**
- * Main application class for the Supermarket Checkout App
- * 
- * The @SpringBootApplication annotation is a convenience annotation that combines:
- * - @Configuration: Marks this as a configuration class
- * - @EnableAutoConfiguration: Tells Spring Boot to auto-configure based on classpath
- * - @ComponentScan: Tells Spring to scan for components in this package and sub-packages
- */
+
 @SpringBootApplication
 public class CheckoutApplication {
 
