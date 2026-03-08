@@ -167,11 +167,6 @@ src/test/java/              All the tests
 - H2 runs in memory, so the data resets every time the app restarts. You can make it persistent by changing `spring.datasource.url` to a file-based URL in `src/main/resources/application.properties`.
 - When you start the app, it automatically loads 10 sample products so you can test right away
 - I used `BigDecimal` for all money calculations because floating-point numbers aren't accurate enough for currency
-- Offers for the same product are allowed as long as their date ranges do not overlap
+- Offers for the same product are allowed over time, as long as their date ranges do not overlap
 - The cart merges duplicate items automatically (if you add apples twice, it combines them and calculates total price)
 - All validation and error messages follow REST best practices
-
-## Limitations
-
-- Overlapping offers for the same product are not supported.
-- Only bundle-style offers are supported as part of the kata scope.
