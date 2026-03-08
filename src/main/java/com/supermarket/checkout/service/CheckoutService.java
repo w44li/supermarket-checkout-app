@@ -3,13 +3,12 @@ import com.supermarket.checkout.model.Cart;
 import com.supermarket.checkout.model.CartItem;
 import com.supermarket.checkout.model.Offer;
 import com.supermarket.checkout.model.Product;
-import com.supermarket.checkout.repository.OfferRepository;
-import com.supermarket.checkout.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.HashMap;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.math.BigDecimal;
 
 
 @Service
@@ -23,13 +22,13 @@ public class CheckoutService {
         this.offerService = offerService;
     }
 
-public double calculateTotal(Cart cart) {
+public BigDecimal calculateTotal(Cart cart) {
 
-    cart = groupItemsByProduct(cart);
-    double total = 0.0;
+    cart = mergeCartItemsByProductId(cart);
+    BigDecimal total = BigDecimal.ZERO;
 
     for (CartItem item : cart.getItems()) {
-        total += calculateItemSubtotal(item);
+        total = total.add(calculateItemSubtotal(item));
     }
 
     return total;
@@ -37,7 +36,7 @@ public double calculateTotal(Cart cart) {
 
 
 //Helper method: 1 Groupng items 
-private Cart groupItemsByProduct(Cart cart) {
+private Cart mergeCartItemsByProductId(Cart cart) {
 
     Map<Long, CartItem> groupedItems = new HashMap<>();
 
@@ -59,7 +58,7 @@ private Cart groupItemsByProduct(Cart cart) {
 }
 
 //Helper mthod: 2 Calculating subtotal for each item considering offers
-private double calculateItemSubtotal(CartItem item) {
+private BigDecimal calculateItemSubtotal(CartItem item) {
     
     Product product = productService.getProductById(item.getProductId());
     
@@ -70,10 +69,12 @@ private double calculateItemSubtotal(CartItem item) {
         int bundles = item.getQuantity() / offer.getRequiredQuantity();
         int remainder = item.getQuantity() % offer.getRequiredQuantity();
         
-        return (bundles * offer.getBundlePrice()) + (remainder * product.getPrice());
+        BigDecimal bundleTotal = offer.getBundlePrice().multiply(BigDecimal.valueOf(bundles));
+        BigDecimal remainderTotal = product.getPrice().multiply(BigDecimal.valueOf(remainder));
+        return bundleTotal.add(remainderTotal);
     }
     
-    return item.getQuantity() * product.getPrice();
+    return product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()));
 
 }
 

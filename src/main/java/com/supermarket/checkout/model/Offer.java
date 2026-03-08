@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Table("OFFERS")
 public class Offer {
@@ -16,7 +17,7 @@ public class Offer {
 
     private Integer requiredQuantity;
 
-    private Double bundlePrice;
+    private BigDecimal bundlePrice;
 
     private LocalDate startDate; 
 
@@ -27,7 +28,7 @@ public class Offer {
     public Offer() {
     }
 
-    public Offer(Long id, Long productId, Integer requiredQuantity, Double bundlePrice, LocalDate startDate, LocalDate endDate) {
+    public Offer(Long id, Long productId, Integer requiredQuantity, BigDecimal bundlePrice, LocalDate startDate, LocalDate endDate) {
         this.id = id;
         this.productId = productId;
         this.requiredQuantity = requiredQuantity;
@@ -48,7 +49,7 @@ public class Offer {
         return requiredQuantity;
     }
 
-    public Double getBundlePrice() {
+    public BigDecimal getBundlePrice() {
         return bundlePrice;
     }
 
@@ -64,7 +65,7 @@ public class Offer {
         this.requiredQuantity = requiredQuantity;
     }
 
-    public void setBundlePrice(Double bundlePrice) {
+    public void setBundlePrice(BigDecimal bundlePrice) {
         this.bundlePrice = bundlePrice;
     }
 

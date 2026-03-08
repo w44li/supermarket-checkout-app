@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Component // spring should knows it 
 public class DataLoader implements CommandLineRunner {
@@ -37,8 +39,8 @@ public class DataLoader implements CommandLineRunner {
         }
     }
 
-    private double randomPrice(double min, double max) {
+    private BigDecimal randomPrice(double min, double max) {
         double value = ThreadLocalRandom.current().nextDouble(min, max);
-        return Math.round(value * 100.0) / 100.0;
+        return BigDecimal.valueOf(value).setScale(2, RoundingMode.HALF_UP);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.supermarket.checkout.model.Cart;
 import com.supermarket.checkout.service.CheckoutService;
+import java.math.BigDecimal;
 
 @RestController
 public class CheckoutController {
@@ -16,7 +17,7 @@ public class CheckoutController {
     }
 
     @PostMapping("/cart/checkout")
-    public Double checkout(@RequestBody Cart cart ) {
+    public BigDecimal checkout(@RequestBody Cart cart ) {
 
         return checkoutService.calculateTotal(cart);
     }
