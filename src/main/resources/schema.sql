@@ -18,6 +18,6 @@ CREATE TABLE offers (
     CONSTRAINT fk_offers_product FOREIGN KEY (product_id)
         REFERENCES products(id) ON DELETE CASCADE,
 
-    --ensures that there are no overlapping offers for the same product
+    --prevents storing the exact same offer period twice for one product
     CONSTRAINT uniq_offer_period UNIQUE (product_id, start_date, end_date)
 );

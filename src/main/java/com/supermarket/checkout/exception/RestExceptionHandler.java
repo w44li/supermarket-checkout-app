@@ -104,7 +104,7 @@ public class RestExceptionHandler {
             return buildProblem(
                     HttpStatus.CONFLICT,
                     "Duplicate offer",
-                    "An offer already exists for this product and date range."
+                "An offer already exists for this product and date range."
             );
         }
 

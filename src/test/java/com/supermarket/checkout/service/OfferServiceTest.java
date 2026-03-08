@@ -16,7 +16,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -50,12 +52,110 @@ class OfferServiceTest {
                 offer.getEndDate()
         );
 
+        when(offerRepository.findAll()).thenReturn(Collections.emptyList());
         when(offerRepository.save(offer)).thenReturn(persisted);
 
         Offer saved = offerService.saveOffer(offer);
 
         assertEquals(100L, saved.getId());
         verify(offerRepository).save(offer);
+    }
+
+        // Verify overlapping offers for the same product are rejected
+    @Test
+        void testSaveOffer_OverlappingDateRangeThrowsException() {
+        Offer existing = new Offer(
+                10L,
+                1L,
+                2,
+                new BigDecimal("0.45"),
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 7)
+        );
+
+        Offer duplicate = new Offer(
+                null,
+                1L,
+                3,
+                new BigDecimal("2.50"),
+                LocalDate.of(2026, 3, 5),
+                LocalDate.of(2026, 3, 12)
+        );
+
+        when(offerRepository.findAll()).thenReturn(Arrays.asList(existing));
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> offerService.saveOffer(duplicate)
+        );
+
+        assertEquals(
+                "An overlapping offer already exists for this product.",
+                exception.getMessage()
+        );
+        verify(offerRepository, never()).save(duplicate);
+    }
+
+    // Verify a new offer is allowed for the same product when the previous one is expired/non-overlapping
+    @Test
+    void testSaveOffer_ExpiredOfferAllowsNewOffer() {
+        Offer expired = new Offer(
+                10L,
+                1L,
+                2,
+                new BigDecimal("0.45"),
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 7)
+        );
+
+        Offer newOffer = new Offer(
+                null,
+                1L,
+                3,
+                new BigDecimal("2.50"),
+                LocalDate.of(2026, 3, 8),
+                LocalDate.of(2026, 3, 14)
+        );
+
+        when(offerRepository.findAll()).thenReturn(Arrays.asList(expired));
+        when(offerRepository.save(newOffer)).thenReturn(newOffer);
+
+        Offer saved = offerService.saveOffer(newOffer);
+
+        assertEquals(1L, saved.getProductId());
+        assertEquals(3, saved.getRequiredQuantity());
+        verify(offerRepository).save(newOffer);
+    }
+
+    // Verify saving the same offer id is allowed
+    @Test
+    void testSaveOffer_UpdateSameOfferAllowed() {
+        Offer existing = new Offer(
+                10L,
+                1L,
+                2,
+                new BigDecimal("0.45"),
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 7)
+        );
+
+        Offer update = new Offer(
+                10L,
+                1L,
+                3,
+                new BigDecimal("2.50"),
+                LocalDate.of(2026, 3, 8),
+                LocalDate.of(2026, 3, 14)
+        );
+
+        when(offerRepository.findAll()).thenReturn(Arrays.asList(existing));
+        when(offerRepository.save(update)).thenReturn(update);
+
+        Offer saved = offerService.saveOffer(update);
+
+        assertEquals(10L, saved.getId());
+        assertEquals(3, saved.getRequiredQuantity());
+        verify(offerRepository).save(update);
     }
 
     // Verify active offer is returned when date is within range
@@ -78,7 +178,7 @@ class OfferServiceTest {
         assertEquals(active.getId(), result.get().getId());
     }
 
-    // Verify start and end dates are treated as inclusive
+    // Verify start and end dates are treated as inclusive (boundary condition)
     @Test
     void testGetActiveOfferForProduct_DateBoundariesInclusive() {
         Offer active = new Offer(
@@ -97,6 +197,54 @@ class OfferServiceTest {
 
         assertTrue(atStart.isPresent());
         assertTrue(atEnd.isPresent());
+    }
+
+    // Verify an expired offer is ignored when a newer active offer exists for the same product
+    @Test
+    void testGetActiveOfferForProduct_IgnoresExpiredOfferAndReturnsCurrentOffer() {
+        Offer expired = new Offer(
+                3L,
+                1L,
+                2,
+                new BigDecimal("0.45"),
+                LocalDate.of(2026, 2, 1),
+                LocalDate.of(2026, 2, 7)
+        );
+
+        Offer current = new Offer(
+                4L,
+                1L,
+                3,
+                new BigDecimal("2.50"),
+                LocalDate.of(2026, 3, 1),
+                LocalDate.of(2026, 3, 7)
+        );
+
+        when(offerRepository.findAll()).thenReturn(Arrays.asList(expired, current));
+
+        Optional<Offer> result = offerService.getActiveOfferForProduct(1L, LocalDate.of(2026, 3, 5));
+
+        assertTrue(result.isPresent());
+        assertEquals(current.getId(), result.get().getId());
+    }
+
+    // Verify a future offer is not applied before its start date
+    @Test
+    void testGetActiveOfferForProduct_FutureOfferIsIgnoredBeforeStartDate() {
+        Offer future = new Offer(
+                5L,
+                1L,
+                3,
+                new BigDecimal("2.50"),
+                LocalDate.of(2026, 4, 1),
+                LocalDate.of(2026, 4, 7)
+        );
+
+        when(offerRepository.findAll()).thenReturn(Arrays.asList(future));
+
+        Optional<Offer> result = offerService.getActiveOfferForProduct(1L, LocalDate.of(2026, 3, 31));
+
+        assertFalse(result.isPresent());
     }
 
     // Verify no offer is returned when date is outside range or product differs
