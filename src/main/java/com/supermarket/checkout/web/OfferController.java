@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import com.supermarket.checkout.model.Offer;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import jakarta.validation.Valid;
 
 @RestController
 public class OfferController {
@@ -26,7 +27,7 @@ public class OfferController {
     }
 
     @GetMapping("/offers/{id}")
-    public Offer getOfferById(@PathVariable Long id) {
+    public Offer getOfferById(@Valid @PathVariable Long id) {
         Offer offer = offerService.getOfferById(id);
         if (offer == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Offer not found");
@@ -35,7 +36,7 @@ public class OfferController {
     }
 
     @PostMapping("/offers")
-    public Offer createOffer(@RequestBody Offer offer) {
+    public Offer createOffer(@Valid @RequestBody Offer offer) {
         Offer saveOffer = offerService.saveOffer(offer);
         return saveOffer;
     }

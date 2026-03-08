@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import jakarta.validation.Valid;
 
 @RestController
 public class ProductController {
@@ -36,7 +37,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public Product getProductById(@PathVariable Long id) {
+    public Product getProductById(@Valid @PathVariable Long id) {
 
         Product product = productService.getProductById(id);
         if (product == null) {
@@ -47,7 +48,7 @@ public class ProductController {
     }
 
     @PostMapping("/products")
-    public Product createProduct(@RequestBody Product product) { 
+    public Product createProduct(@Valid @RequestBody Product product) { 
 
         Product saveProduct = productService.saveProduct(product);
 
