@@ -137,14 +137,29 @@ Once the app is running, you can use these endpoints:
         "items": [
           {
             "productId": 1,
+            "name": "Rice",
+            "quantity": 1
+          },
+          {
+            "productId": 2,
             "name": "Apple",
-            "quantity": 7
+            "quantity": 1
+          },
+          {
+            "productId": 1,
+            "name": "Rice",
+            "quantity": 1
+          },
+          {
+            "productId": 1,
+            "name": "Rice",
+            "quantity": 1
           }
         ]
       }'
     ```
 
-  - Response: the endpoint returns the calculated total, for example `6.00`
+  - Response: the endpoint returns the calculated total, for example `26.50`
 
 ## Project Structure
 
