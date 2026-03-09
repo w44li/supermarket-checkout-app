@@ -1,10 +1,10 @@
-CREATE TABLE products (
+CREATE TABLE if not exists products (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price DECIMAL(10,2) NOT NULL
 );
 
-CREATE TABLE offers (
+CREATE TABLE if not exists offers (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     product_id BIGINT NOT NULL,
     required_quantity INT NOT NULL,
