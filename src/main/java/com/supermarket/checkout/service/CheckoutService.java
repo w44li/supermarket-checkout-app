@@ -4,6 +4,7 @@ import com.supermarket.checkout.model.CartItem;
 import com.supermarket.checkout.model.Offer;
 import com.supermarket.checkout.model.Product;
 import org.springframework.stereotype.Service;
+
 import java.util.Map;
 import java.util.HashMap;
 import java.time.LocalDate;
@@ -22,13 +23,13 @@ public class CheckoutService {
         this.offerService = offerService;
     }
 
-public BigDecimal calculateTotal(Cart cart) {
+public BigDecimal calculateCartTotal(Cart cart) {
 
     cart = mergeCartItemsByProductId(cart);
     BigDecimal total = BigDecimal.ZERO;
 
     for (CartItem item : cart.getItems()) {
-        total = total.add(calculateItemPriceWithOffers(item));
+        total = total.add(calculateItemPriceWithOffers(item));  // total = priceCartItem[i] + total
     }
 
     return total;
@@ -57,7 +58,7 @@ private Cart mergeCartItemsByProductId(Cart cart) {
     return cart;
 }
 
-//Helper method: 2 Calculating price of single item with offers applied
+
 private BigDecimal calculateItemPriceWithOffers(CartItem item) {
     
     Product product = productService.getProductById(item.getProductId());
@@ -65,12 +66,14 @@ private BigDecimal calculateItemPriceWithOffers(CartItem item) {
     LocalDate today = LocalDate.now();
     Offer offer = offerService.getActiveOfferForProduct(item.getProductId(), today).orElse(null);
     
-    if (offer != null && item.getQuantity() >= offer.getRequiredQuantity()) {
-        int bundles = item.getQuantity() / offer.getRequiredQuantity();
-        int remainder = item.getQuantity() % offer.getRequiredQuantity();
-        
+    if (offer != null && item.getQuantity() >= offer.getRequireBundleQuantity()) {
+
+        int bundles = item.getQuantity() / offer.getRequireBundleQuantity();
+        int remainder = item.getQuantity() % offer.getRequireBundleQuantity();
+                   
         BigDecimal bundleTotal = offer.getBundlePrice().multiply(BigDecimal.valueOf(bundles));
         BigDecimal remainderTotal = product.getPrice().multiply(BigDecimal.valueOf(remainder));
+
         return bundleTotal.add(remainderTotal);
     }
     
