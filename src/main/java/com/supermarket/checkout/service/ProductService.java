@@ -24,7 +24,7 @@ public class ProductService {
     }
 
     public Product saveProduct(Product product) {
-        String normalizedName = product.getName() == null ? "" : product.getName().trim();
+        String normalizedName = product.getName().trim();
 
         Product existingProductWithSameName = StreamSupport
                 .stream(productRepository.findAll().spliterator(), false)
