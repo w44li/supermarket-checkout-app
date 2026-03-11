@@ -21,7 +21,7 @@ public class Product {
     @Size(max = 255)
     private String name;
 
-    @Positive
+    @Positive 
     private BigDecimal price;
 
     public Product() {

@@ -123,7 +123,7 @@ class OfferServiceTest {
         Offer saved = offerService.saveOffer(newOffer);
 
         assertEquals(1L, saved.getProductId());
-        assertEquals(3, saved.getRequiredQuantity());
+        assertEquals(3, saved.getRequiredBundleQuantity());
         verify(offerRepository).save(newOffer);
     }
 
@@ -154,7 +154,7 @@ class OfferServiceTest {
         Offer saved = offerService.saveOffer(update);
 
         assertEquals(10L, saved.getId());
-        assertEquals(3, saved.getRequiredQuantity());
+        assertEquals(3, saved.getRequiredBundleQuantity());
         verify(offerRepository).save(update);
     }
 

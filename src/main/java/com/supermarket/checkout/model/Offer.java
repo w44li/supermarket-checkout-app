@@ -51,6 +51,10 @@ public class Offer {
         return requiredQuantity;
     }
 
+    public Integer getRequiredBundleQuantity() {
+        return requiredQuantity;
+    }
+
     public BigDecimal getBundlePrice() {
         return bundlePrice;
     }

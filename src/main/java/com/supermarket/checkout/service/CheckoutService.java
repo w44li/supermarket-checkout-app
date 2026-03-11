@@ -23,7 +23,7 @@ public class CheckoutService {
         this.offerService = offerService;
     }
 
-public BigDecimal calculateCartTotal(Cart cart) {
+    public BigDecimal calculateTotal(Cart cart) {
 
     cart = mergeCartItemsByProductId(cart);
     BigDecimal total = BigDecimal.ZERO;
@@ -66,10 +66,10 @@ private BigDecimal calculateItemPriceWithOffers(CartItem item) {
     LocalDate today = LocalDate.now();
     Offer offer = offerService.getActiveOfferForProduct(item.getProductId(), today).orElse(null);
     
-    if (offer != null && item.getQuantity() >= offer.getRequireBundleQuantity()) {
+    if (offer != null && item.getQuantity() >= offer.getRequiredBundleQuantity()) {
 
-        int bundles = item.getQuantity() / offer.getRequireBundleQuantity();
-        int remainder = item.getQuantity() % offer.getRequireBundleQuantity();
+        int bundles = item.getQuantity() / offer.getRequiredBundleQuantity();
+        int remainder = item.getQuantity() % offer.getRequiredBundleQuantity();
                    
         BigDecimal bundleTotal = offer.getBundlePrice().multiply(BigDecimal.valueOf(bundles));
         BigDecimal remainderTotal = product.getPrice().multiply(BigDecimal.valueOf(remainder));
